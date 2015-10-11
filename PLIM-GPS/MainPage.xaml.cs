@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -43,6 +44,33 @@ namespace PLIM_GPS
             // Événement Windows.Phone.UI.Input.HardwareButtons.BackPressed.
             // Si vous utilisez le NavigationHelper fourni par certains modèles,
             // cet événement est géré automatiquement.
+        }
+
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Geolocator geolocator = new Geolocator();
+            geolocator.DesiredAccuracyInMeters = 50;
+
+            try
+            {
+                Geoposition geoposition = await geolocator.GetGeopositionAsync(
+                     maximumAge: TimeSpan.FromMinutes(5),
+                     timeout: TimeSpan.FromSeconds(10)
+                    );
+
+                //With this 2 lines of code, the app is able to write on a Text Label the Latitude and the Longitude, given by {{Icode|geoposition}}
+                geolocation.Text = "GPS:" + geoposition.Coordinate.Latitude.ToString("0.00") + ", " + geoposition.Coordinate.Longitude.ToString("0.00");
+            }
+            //If an error is catch 2 are the main causes: the first is that you forgot to include ID_CAP_LOCATION in your app manifest. 
+            //The second is that the user doesn't turned on the Location Services
+            catch (Exception ex)
+            {
+                if ((uint)ex.HResult == 0x80004004)
+                {
+                    // the application does not have the right capability or the location master switch is off
+                    geolocation.Text = "location  is disabled in phone settings.";
+                }
+            }
         }
     }
 }

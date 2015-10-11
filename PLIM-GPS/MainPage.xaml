@@ -9,6 +9,28 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="4*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Border x:Name="CanvasTitleBorder" BorderBrush="Gray" Margin="10,10,10,10" BorderThickness="2" Grid.Row="0">
+            <Canvas>
+                <Viewbox Stretch="Fill" Canvas.Left="99" Width="174" Height="175" Canvas.Top="-10">
+                    <TextBox x:Name="textBox" Text="GPS" Foreground="White" Background="Transparent" BorderThickness="0" IsHitTestVisible="False"/>
+                </Viewbox>
+                <Viewbox Stretch="Fill">
+                    <TextBox x:Name="textBox1" Margin="0" Text="PLIM Project" Foreground="White" Background="Black" BorderThickness="0" IsHitTestVisible="False"/>
+                </Viewbox>
+            </Canvas>
+        </Border>
+        <Border x:Name="CanvasAccelerometerBorder" BorderBrush="Gray" BorderThickness="2" Margin="10,10,10,10" Grid.Row="1">
+            <Grid>
+                <StackPanel>
+                    <TextBlock Text="GPS location" FontSize="48"/>
+                    <Button Content="Get GPS location" Click="Button_Click"/>
+                    <TextBlock Name="geolocation" Text="Your location." FontSize="28"/>
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </Page>
