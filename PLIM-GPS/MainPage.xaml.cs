@@ -12,7 +12,9 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls.Maps;
 using Windows.UI.Xaml.Navigation;
+using GPSBackgroundTask;
 
 // Pour en savoir plus sur le modèle d'élément Page vierge, consultez la page http://go.microsoft.com/fwlink/?LinkId=391641
 
@@ -71,6 +73,22 @@ namespace PLIM_GPS
                     geolocation.Text = "location  is disabled in phone settings.";
                 }
             }
+        }
+
+        private void RegisterTask_Click(object sender, RoutedEventArgs e) {
+            if (!GPSTask.IsTaskRegistered())
+            {
+                GPSTask.Register();
+            } else
+            {
+                GPSTask.Unregister();
+            }
+
+        }
+
+        private void MyMap_MapTapped(Windows.UI.Xaml.Controls.Maps.MapControl sender, MapInputEventArgs args)
+        { 
+
         }
     }
 }
