@@ -15,6 +15,12 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Controls.Maps;
 using Windows.UI.Xaml.Navigation;
 using GPSBackgroundTask;
+using Windows.UI.Xaml.Controls.Maps;
+using Windows.Storage.Streams;
+using Windows.Services.Maps;
+using System.Text;
+using Windows.UI.Popups;
+using Windows.UI.Core;
 
 // Pour en savoir plus sur le modèle d'élément Page vierge, consultez la page http://go.microsoft.com/fwlink/?LinkId=391641
 
@@ -37,20 +43,18 @@ namespace PLIM_GPS
         /// </summary>
         /// <param name="e">Données d'événement décrivant la manière dont l'utilisateur a accédé à cette page.
         /// Ce paramètre est généralement utilisé pour configurer la page.</param>
+        
+        Geolocator geolocator;
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            // TODO: préparer la page pour affichage ici.
+            //myMapControl.MapServiceToken = "abcdef-abcdefghijklmno";
 
-            // TODO: si votre application comporte plusieurs pages, assurez-vous que vous
-            // gérez le bouton Retour physique en vous inscrivant à l’événement
-            // Événement Windows.Phone.UI.Input.HardwareButtons.BackPressed.
-            // Si vous utilisez le NavigationHelper fourni par certains modèles,
-            // cet événement est géré automatiquement.
+            
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            Geolocator geolocator = new Geolocator();
+            geolocator = new Geolocator();
             geolocator.DesiredAccuracyInMeters = 50;
 
             try
@@ -59,6 +63,7 @@ namespace PLIM_GPS
                      maximumAge: TimeSpan.FromMinutes(5),
                      timeout: TimeSpan.FromSeconds(10)
                     );
+                
 
                 //With this 2 lines of code, the app is able to write on a Text Label the Latitude and the Longitude, given by {{Icode|geoposition}}
                 geolocation.Text = "GPS:" + geoposition.Coordinate.Latitude.ToString("0.00") + ", " + geoposition.Coordinate.Longitude.ToString("0.00");
@@ -74,7 +79,7 @@ namespace PLIM_GPS
                 }
             }
         }
-
+        
         private void RegisterTask_Click(object sender, RoutedEventArgs e) {
             if (!GPSTask.IsTaskRegistered())
             {
@@ -83,11 +88,6 @@ namespace PLIM_GPS
             {
                 GPSTask.Unregister();
             }
-
-        }
-
-        private void MyMap_MapTapped(Windows.UI.Xaml.Controls.Maps.MapControl sender, MapInputEventArgs args)
-        { 
 
         }
     }
