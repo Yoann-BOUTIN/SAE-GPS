@@ -82,6 +82,8 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataManager.cs" />
+    <Compile Include="GPSElement.cs" />
     <Compile Include="GPSTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
