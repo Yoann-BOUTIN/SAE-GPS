@@ -54,7 +54,7 @@ namespace PLIM_GPS
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             geolocator = new Geolocator();
-            geolocator.DesiredAccuracyInMeters = 50;
+            geolocator.DesiredAccuracyInMeters = 20;
 
             try
             {
@@ -101,8 +101,16 @@ namespace PLIM_GPS
             }
 
         }
-        
 
+        private void TrafficCheck_Checked(object sender, RoutedEventArgs e)
+        {
+            MyMap.TrafficFlowVisible = true;
+        }
+
+        private void TrafficCheck_Unchecked(object sender, RoutedEventArgs e)
+        {
+            MyMap.TrafficFlowVisible = false;
+        }
         private void themeBtn_Click(object sender, RoutedEventArgs e)
         {
             if (themeBtn.Label == "Dark")

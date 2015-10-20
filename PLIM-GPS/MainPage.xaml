@@ -47,8 +47,10 @@
                     </Grid>
                 </Grid>
                 <Grid Grid.Row="1">
-                    <Maps:MapControl x:Name="MyMap" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Stretch"/>
-                    
+                    <Maps:MapControl x:Name="MyMap" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Stretch"
+                                     TrafficFlowVisible="{Binding IsChecked, ElementName=TrafficCheck, Mode=TwoWay}"  
+LandmarksVisible="{Binding IsChecked, ElementName=LandmarksCheck, Mode=TwoWay}"/>
+                    <CheckBox x:Name="TrafficCheck" Content="Traffic Flow" Foreground="Green" Checked="TrafficCheck_Checked" Unchecked="TrafficCheck_Unchecked"></CheckBox>
                 </Grid>
             </Grid>
         </Border>
