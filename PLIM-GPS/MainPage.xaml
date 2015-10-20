@@ -47,10 +47,15 @@
                     </Grid>
                 </Grid>
                 <Grid Grid.Row="1">
-
-
+                    <Maps:MapControl x:Name="MyMap" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Stretch"/>
+                    
                 </Grid>
             </Grid>
         </Border>
     </Grid>
+    <Page.BottomAppBar>
+        <CommandBar ClosedDisplayMode="Minimal" Opacity="0.7">
+            <AppBarButton Label="Dark" x:Name="themeBtn" Icon="Target" Click="themeBtn_Click"/>
+        </CommandBar>
+    </Page.BottomAppBar>
 </Page>

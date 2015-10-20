@@ -47,11 +47,10 @@ namespace PLIM_GPS
         Geolocator geolocator;
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            //myMapControl.MapServiceToken = "abcdef-abcdefghijklmno";
-
+            MyMap.MapServiceToken = "abcdef-abcdefghijklmno";
             
         }
-
+        
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             geolocator = new Geolocator();
@@ -67,6 +66,17 @@ namespace PLIM_GPS
 
                 //With this 2 lines of code, the app is able to write on a Text Label the Latitude and the Longitude, given by {{Icode|geoposition}}
                 geolocation.Text = "GPS:" + geoposition.Coordinate.Latitude.ToString("0.00") + ", " + geoposition.Coordinate.Longitude.ToString("0.00");
+                MapIcon icon = new MapIcon();
+                icon.Location = geoposition.Coordinate.Point;
+                icon.Title = "My Location";
+                icon.Image = RandomAccessStreamReference.CreateFromUri(new Uri("ms-appx:///Assets/location-pin-48.png"));
+                MyMap.MapElements.Add(icon);
+
+                MyMap.Center = geoposition.Coordinate.Point;
+                MyMap.DesiredPitch = 0;
+
+                await MyMap.TrySetViewAsync(geoposition.Coordinate.Point, 15);
+
             }
             //If an error is catch 2 are the main causes: the first is that you forgot to include ID_CAP_LOCATION in your app manifest. 
             //The second is that the user doesn't turned on the Location Services
@@ -80,6 +90,7 @@ namespace PLIM_GPS
             }
         }
         
+
         private void RegisterTask_Click(object sender, RoutedEventArgs e) {
             if (!GPSTask.IsTaskRegistered())
             {
@@ -89,6 +100,21 @@ namespace PLIM_GPS
                 GPSTask.Unregister();
             }
 
+        }
+        
+
+        private void themeBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (themeBtn.Label == "Dark")
+            {
+                MyMap.ColorScheme = MapColorScheme.Dark;
+                themeBtn.Label = "Light";
+            }
+            else if (themeBtn.Label == "Light")
+            {
+                MyMap.ColorScheme = MapColorScheme.Light;
+                themeBtn.Label = "Dark";
+            }
         }
     }
 }
