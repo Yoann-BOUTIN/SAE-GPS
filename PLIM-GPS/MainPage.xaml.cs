@@ -1,26 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Devices.Geolocation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Controls.Maps;
 using Windows.UI.Xaml.Navigation;
 using GPSBackgroundTask;
-using Windows.UI.Xaml.Controls.Maps;
-using Windows.Storage.Streams;
-using Windows.Services.Maps;
-using System.Text;
-using Windows.UI.Popups;
-using Windows.UI.Core;
 
 // Pour en savoir plus sur le modèle d'élément Page vierge, consultez la page http://go.microsoft.com/fwlink/?LinkId=391641
 
@@ -88,6 +72,16 @@ namespace PLIM_GPS
                     geolocation.Text = "location  is disabled in phone settings.";
                 }
             }
+
+            // TEST
+            List<GPSElement> myData = new List<GPSElement>();
+            myData.Add(new GPSElement() { Latitude = "4.0215", Longitude = "8.0546", RegistredAt = "Maintenant 1" });
+            myData.Add(new GPSElement() { Latitude = "4.0215", Longitude = "8.0546", RegistredAt = "Maintenant 2" });
+            myData.Add(new GPSElement() { Latitude = "4.0215", Longitude = "8.0546", RegistredAt = "Maintenant 2" });
+
+            // await DataManager.SaveDataAsync(myData);
+
+            //await DataManager.ReadDataAsync();
         }
         
 
