@@ -25,11 +25,6 @@ namespace GPSBackgroundTask
         }
 
 
-        private static Task<IList<GPSElement>> DeserialiazeCluster()
-        {
-            return new Task.Run(() => );
-        }
-
         private static async Task<bool> WriteInFile (IList<GPSElement> positions)
         {
             if (positions == null)

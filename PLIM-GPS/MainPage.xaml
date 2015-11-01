@@ -42,8 +42,8 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Content="Get GPS location" Click="Button_Click"/>
-                        <TextBlock x:Name="geolocation" Text="Your location." FontSize="28" Grid.Column="1" VerticalAlignment="Center"/>
+                        <Button Name="buttonLocation" Click="Button_Click"/>
+                        <!--<TextBlock x:Name="geolocation" Text="Your location." FontSize="28" Grid.Column="1" VerticalAlignment="Center"/>-->
                     </Grid>
                 </Grid>
                 <Grid Grid.Row="1">
