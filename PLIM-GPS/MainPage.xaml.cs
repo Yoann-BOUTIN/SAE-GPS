@@ -66,8 +66,8 @@ namespace PLIM_GPS
                 var posList = new List<BasicGeoposition>();
                 posList.Add(new BasicGeoposition()
                 {
-                    Latitude = 43.711908,
-                    Longitude = 7.271373
+                    Latitude = geoposition.Coordinate.Point.Position.Latitude,
+                    Longitude = geoposition.Coordinate.Point.Position.Longitude
                 });
                 posList.Add(new BasicGeoposition()
                 {
@@ -108,7 +108,7 @@ namespace PLIM_GPS
         private void drawRoute(List<BasicGeoposition> pointList)
         {
             MapPolyline line = new MapPolyline();
-            line.StrokeColor = Colors.Yellow;
+            line.StrokeColor = Colors.Blue;
             line.StrokeThickness = 5;
             line.Path = new Geopath(pointList);
             MyMap.MapElements.Add(line);
