@@ -93,6 +93,9 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\location-pin-24.png" />
+    <Content Include="Assets\location-pin-48.png" />
+    <Content Include="Assets\location-pin-512.png" />
     <Content Include="Assets\Logo.scale-240.png" />
     <Content Include="Assets\SmallLogo.scale-240.png" />
     <Content Include="Assets\SplashScreen.scale-240.png" />
