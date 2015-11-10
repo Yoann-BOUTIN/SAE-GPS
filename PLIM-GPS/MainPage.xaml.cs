@@ -5,6 +5,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using GPSBackgroundTask;
+using System.Diagnostics;
 
 // Pour en savoir plus sur le modèle d'élément Page vierge, consultez la page http://go.microsoft.com/fwlink/?LinkId=391641
 
@@ -69,9 +70,12 @@ namespace PLIM_GPS
             myData.Add(new GPSElement() { Latitude = "4.0215", Longitude = "8.0546", RegistredAt = "Maintenant 2" });
             myData.Add(new GPSElement() { Latitude = "4.0215", Longitude = "8.0546", RegistredAt = "Maintenant 2" });
 
-            // await DataManager.SaveDataAsync(myData);
+            //await DataManager.SaveDataAsync(myData);
 
             //await DataManager.ReadDataAsync();
+
+            //var test = await DataManager.RetrieveDataAsync();
+           // Debug.WriteLine(test.ToString());
         }
         
         private void RegisterTask_Click(object sender, RoutedEventArgs e) {
