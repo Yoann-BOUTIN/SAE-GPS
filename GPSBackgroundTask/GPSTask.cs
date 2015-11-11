@@ -16,6 +16,7 @@ namespace GPSBackgroundTask
 
         static string TaskName = "GPSTask";
         private Geolocator geolocator;
+        
 
         public async static void Register(Geoposition position)
         {
@@ -23,10 +24,18 @@ namespace GPSBackgroundTask
             {
                 // Demande de tâches background en async
                 var result = await BackgroundExecutionManager.RequestAccessAsync();
+                
                 // Construction de la tâche en background
                 var builder = new BackgroundTaskBuilder();
                 builder.Name = TaskName;
                 builder.TaskEntryPoint = typeof(GPSTask).FullName;
+
+                // Préparation de la GeoFence ==> barrière vituelle, 100m autour de la position, pendant plus de 5 secondes
+                Geocircle circle = new Geocircle(position.Coordinate.Point.Position, 100);
+                var geofence = new Geofence(TaskName+"Register", circle, MonitoredGeofenceStates.Exited, true, TimeSpan.FromSeconds(5));
+                GeofenceMonitor geoMonitor = GeofenceMonitor.Current;
+                geoMonitor.Geofences.Add(geofence);
+
                 // Déclenchement de la tâche suivant la position
                 builder.SetTrigger(new LocationTrigger(LocationTriggerType.Geofence));
                 BackgroundTaskRegistration theTask = builder.Register();
@@ -80,47 +89,31 @@ namespace GPSBackgroundTask
             // Canceled case
             taskInstance.Canceled += (s, e) => {
                 // TODO faire le ménage en cas d'annulation
+                Debug.WriteLine("Task canceled!!!!");
             };
 
             // Progress indication
             taskInstance.Progress = 0;
 
             // Geolocator settings if not already done
-            if (geolocator == null)
+            geolocator = new Geolocator()
             {
-                geolocator = new Geolocator();
-                geolocator.DesiredAccuracyInMeters = 30;
-            }
+                DesiredAccuracy = PositionAccuracy.High,
+                MovementThreshold = 15,
+                ReportInterval = 2000
+            };
 
-            try
+            Geoposition startRunPosition = await geolocator.GetGeopositionAsync(
+                maximumAge: TimeSpan.FromSeconds(20),
+                timeout: TimeSpan.FromSeconds(10)
+                );
+
+            Debug.WriteLine("Start Position : ", startRunPosition.Coordinate.Point.Position.Latitude.ToString(), "    ", startRunPosition.Coordinate.Point.Position.Latitude.ToString());
+
+            geolocator.PositionChanged += (s, e) =>
             {
-                Geoposition geoposition = await geolocator.GetGeopositionAsync(
-                        maximumAge: TimeSpan.FromMinutes(5),
-                        timeout: TimeSpan.FromSeconds(10)
-                    );
-
-
-                GPSElement positionToSave = new GPSElement();
-                positionToSave.Latitude = geoposition.Coordinate.Point.Position.Latitude.ToString();
-                positionToSave.Longitude = geoposition.Coordinate.Point.Position.Longitude.ToString();
-                positionToSave.RegistredAt = "Test save";
-
-                List<GPSElement> myData = new List<GPSElement>();
-                myData.Add(positionToSave);
-
-                await DataManager.SaveDataAsync(myData);
-
-                var test = await DataManager.RetrieveDataAsync();
-                Debug.WriteLine(test.ToString());
-            }
-            catch (Exception ex)
-            {
-                if ((uint)ex.HResult == 0x80004004)
-                {
-                    // the application does not have the right capability or the location master switch is off
-                    Debug.WriteLine("Location  is disabled in phone settings.");
-                }
-            }
+                Debug.WriteLine("Position : ", e.Position.Coordinate.Point.Position.Latitude.ToString(), "    ", e.Position.Coordinate.Point.Position.Latitude.ToString());
+            };
 
             // Create a toast notification to show a geofence has been hit
             var toastXmlContent = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);

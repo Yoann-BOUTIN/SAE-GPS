@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GPSBackgroundTask;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
@@ -105,6 +106,8 @@ namespace PLIM_GPS
                         maximumAge: TimeSpan.FromMinutes(1),
                         timeout: TimeSpan.FromSeconds(10)
                     );
+
+                    GPSTask.Register(location);
                 }
                 catch (UnauthorizedAccessException)
                 {
