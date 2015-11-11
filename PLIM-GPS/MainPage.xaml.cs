@@ -130,10 +130,10 @@ namespace PLIM_GPS
         private void RegisterTask_Click(object sender, RoutedEventArgs e) {
             if (!GPSTask.IsTaskRegistered())
             {
-                GPSTask.Register();
+                //GPSTask.Register();
             } else
             {
-                GPSTask.Unregister();
+                //GPSTask.Unregister();
             }
 
         }

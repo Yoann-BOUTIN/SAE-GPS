@@ -17,16 +17,18 @@ namespace GPSBackgroundTask
         static string TaskName = "GPSTask";
         private Geolocator geolocator;
 
-        public async static void Register()
+        public async static void Register(Geoposition position)
         {
             if (!IsTaskRegistered())
             {
+                // Demande de tâches background en async
                 var result = await BackgroundExecutionManager.RequestAccessAsync();
+                // Construction de la tâche en background
                 var builder = new BackgroundTaskBuilder();
                 builder.Name = TaskName;
                 builder.TaskEntryPoint = typeof(GPSTask).FullName;
-                builder.SetTrigger(new TimeTrigger(15, false));
-                await BackgroundExecutionManager.RequestAccessAsync();
+                // Déclenchement de la tâche suivant la position
+                builder.SetTrigger(new LocationTrigger(LocationTriggerType.Geofence));
                 BackgroundTaskRegistration theTask = builder.Register();
 
                 // Show notification
