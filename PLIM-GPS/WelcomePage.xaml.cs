@@ -21,11 +21,14 @@ namespace PLIM_GPS
 
         public bool isAlreadyTracking { get; set; }
 
+        Windows.System.Display.DisplayRequest display;
+
         public WelcomePage()
         {
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Required;
             startButton.Content = "Start";
+            display = new Windows.System.Display.DisplayRequest();
         }
 
         /// <summary>
@@ -44,6 +47,9 @@ namespace PLIM_GPS
         {
             if((String)startButton.Content == "Start")
             {
+                display.RequestActive();
+                titleText.Text = "Félicitation";
+                expicationText.Text = "Félicitations l'enregistrement de votre position GPS a commencé. Vous pouvez l'arrêter à tout moment en utilisant le bouton 'Stop' ci-dessous. Le bouton 'Visualize' vous permet de visualiser les trajets déjà enregistrés par l'application. ";
                 stateText.Text = "In progress...";
                 stateText.Foreground = new SolidColorBrush(Colors.Orange);
                 geolocator = new Geolocator();
@@ -74,6 +80,10 @@ namespace PLIM_GPS
                         //geolocation.Text = "location  is disabled in phone settings.";
                     }
                 }
+            }
+            else if((String)startButton.Content == "Stop")
+            {
+                display.RequestRelease();
             }
             
             changeButtonState();
