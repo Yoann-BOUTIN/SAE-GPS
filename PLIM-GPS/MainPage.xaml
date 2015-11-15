@@ -42,15 +42,22 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Content="Get GPS location" Click="Button_Click"/>
-                        <TextBlock x:Name="geolocation" Text="Your location." FontSize="28" Grid.Column="1" VerticalAlignment="Center"/>
+                        <Button Name="buttonLocation" Click="Button_Click"/>
+                        <!--<TextBlock x:Name="geolocation" Text="Your location." FontSize="28" Grid.Column="1" VerticalAlignment="Center"/>-->
                     </Grid>
                 </Grid>
                 <Grid Grid.Row="1">
-
-
+                    <Maps:MapControl x:Name="MyMap" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Stretch"
+                                     TrafficFlowVisible="{Binding IsChecked, ElementName=TrafficCheck, Mode=TwoWay}"  
+LandmarksVisible="{Binding IsChecked, ElementName=LandmarksCheck, Mode=TwoWay}"/>
+                    <CheckBox x:Name="TrafficCheck" Content="Traffic Flow" Foreground="Green" Checked="TrafficCheck_Checked" Unchecked="TrafficCheck_Unchecked"></CheckBox>
                 </Grid>
             </Grid>
         </Border>
     </Grid>
+    <Page.BottomAppBar>
+        <CommandBar ClosedDisplayMode="Minimal" Opacity="0.7">
+            <AppBarButton Label="Dark" x:Name="themeBtn" Icon="Target" Click="themeBtn_Click"/>
+        </CommandBar>
+    </Page.BottomAppBar>
 </Page>

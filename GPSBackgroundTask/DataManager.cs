@@ -11,25 +11,43 @@ namespace GPSBackgroundTask
 {
     public static class DataManager
     {
-        private const string fileName = "GPSData.json";
+        // Name of our storage file
+        private const string storageFile = "GPSBrutData.json";
+        private const string clusterFile = "GPSClusterData.json";
 
-
+        // PUBLIC exposed operations of the DataManager ==> avoid error for exposed Task
         public static IAsyncOperation<bool> SaveDataAsync(IList<GPSElement> positions)
         {
             return DataManager.WriteInFile(positions).AsAsyncOperation();
         }
 
-        public static IAsyncOperation<bool> ReadDataAsync()
+        public static IAsyncOperation<String> ReadDataAsync()
         {
             return DataManager.ReadFromFile().AsAsyncOperation();
         }
 
 
-        private static Task<IList<GPSElement>> DeserialiazeCluster()
+        public static IAsyncOperation<IList<GPSElement>> RetrieveDataAsync()
         {
-            return new Task.Run(() => );
+            return DataManager.DeserializaClusterAsync().AsAsyncOperation();
         }
 
+
+
+        // Real tasks to perform
+        // Read and deserialize the element, return the list of GPSElement as cluster
+        private static async Task<IList<GPSElement>> DeserializaClusterAsync() 
+        {
+            List<GPSElement> cluster;
+            var JSONSerializer = new DataContractJsonSerializer(typeof(List<GPSElement>));
+            var stream = await ApplicationData.Current.LocalFolder.OpenStreamForReadAsync(storageFile);
+
+            cluster = (List<GPSElement>)JSONSerializer.ReadObject(stream);
+
+            return cluster;
+        }
+
+        // Write the List as 
         private static async Task<bool> WriteInFile (IList<GPSElement> positions)
         {
             if (positions == null)
@@ -38,46 +56,29 @@ namespace GPSBackgroundTask
             }
 
             var serializer = new DataContractJsonSerializer(typeof(List<GPSElement>));
-            using (var stream = await ApplicationData.Current.LocalFolder.OpenStreamForWriteAsync(fileName, CreationCollisionOption.ReplaceExisting))
+            using (var stream = await ApplicationData.Current.LocalFolder.OpenStreamForWriteAsync(storageFile, CreationCollisionOption.ReplaceExisting))
             {
                 serializer.WriteObject(stream, positions);
             }
-            // Show notification
-            var toastXmlContent = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);
-
-            var txtNodes = toastXmlContent.GetElementsByTagName("text");
-            txtNodes[0].AppendChild(toastXmlContent.CreateTextNode("DataManager"));
-            txtNodes[1].AppendChild(toastXmlContent.CreateTextNode("SUCCESS WRITE"));
-
-            var toast = new ToastNotification(toastXmlContent);
-            var toastNotifier = ToastNotificationManager.CreateToastNotifier();
-            toastNotifier.Show(toast);
 
             return true;
         }
 
-        private static async Task<bool> ReadFromFile()
+        private static async Task<String> ReadFromFile()
         {
-            string fileContent = String.Empty;
-            var stream = await ApplicationData.Current.LocalFolder.OpenStreamForReadAsync(fileName);
+            String fileContent = String.Empty;
+            var stream = await ApplicationData.Current.LocalFolder.OpenStreamForReadAsync(storageFile);
             using (StreamReader reader = new StreamReader(stream))
             {
                 fileContent = await reader.ReadToEndAsync();
             }
 
+            if (fileContent.Equals(String.Empty))
+            {
+                return "NoFile";
+            }
 
-            // Show notification
-            var toastXmlContent = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);
-
-            var txtNodes = toastXmlContent.GetElementsByTagName("text");
-            txtNodes[0].AppendChild(toastXmlContent.CreateTextNode("DataManager"));
-            txtNodes[1].AppendChild(toastXmlContent.CreateTextNode(fileContent));
-
-            var toast = new ToastNotification(toastXmlContent);
-            var toastNotifier = ToastNotificationManager.CreateToastNotifier();
-            toastNotifier.Show(toast);
-
-            return true;
+            return fileContent;
         }
     }
 }
