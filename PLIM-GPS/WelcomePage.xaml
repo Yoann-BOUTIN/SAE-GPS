@@ -1,0 +1,40 @@
+﻿<Page
+    x:Class="PLIM_GPS.WelcomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PLIM_GPS"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+           <RowDefinition Height="2*"/>
+            <RowDefinition Height="3*"/>
+        </Grid.RowDefinitions>
+        
+        <StackPanel Orientation="Vertical">
+            <TextBlock Text="GPS PLIM" FontStyle="Italic" FontSize="18"/>
+            <TextBlock x:Name="titleText" Text="Bienvenue" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center"/>
+            <TextBlock x:Name="expicationText" Margin="0 10"  FontSize="20" TextWrapping="Wrap" TextAlignment="Justify"
+                       Text="Bienvenue sur l'appication PLIM GPS grâce à laquelle vous allez pouvoir suivre vos déplacements tout au long de la journée.
+                       Pour commencez à suivre votre position, appuyez sur le bouton 'Start' ci-dessous."  />
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" Grid.Row="1" >
+            <StackPanel Orientation="Horizontal" Margin="0 0 0 50">
+                <TextBlock Text="Etat : " FontSize="25" FontWeight="Bold" />
+                <TextBlock x:Name="stateText" Text=" Stopped" FontSize="25" Foreground="Red" FontWeight="Bold" Margin="5,0,0,0"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button x:Name="startButton" Width="200px" Height="100px" FontSize="32" Click="startButton_Click" />
+                <Button x:Name="visualizeButton" Content="Visualize" Width="200px" Height="100px" FontSize="32" Click="visualizeButton_Click"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Position actuelle : " FontSize="20"></TextBlock>
+                <TextBlock x:Name="geoText" FontSize="20" Margin="5,0,0,0"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>
