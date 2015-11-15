@@ -93,10 +93,10 @@ namespace PLIM_GPS
             }
 
             // TEST
-            List<GPSElement> myData = new List<GPSElement>();
+            /*List<GPSElement> myData = new List<GPSElement>();
             myData.Add(new GPSElement() { Latitude = "4.0215", Longitude = "8.0546", RegistredAt = "Maintenant 1" });
             myData.Add(new GPSElement() { Latitude = "4.0215", Longitude = "8.0546", RegistredAt = "Maintenant 2" });
-            myData.Add(new GPSElement() { Latitude = "4.0215", Longitude = "8.0546", RegistredAt = "Maintenant 2" });
+            myData.Add(new GPSElement() { Latitude = "4.0215", Longitude = "8.0546", RegistredAt = "Maintenant 2" });*/
 
             //await DataManager.SaveDataAsync(myData);
 
