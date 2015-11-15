@@ -5,10 +5,37 @@
     xmlns:local="using:PLIM_GPS"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1.5*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border x:Name="CanvasText" BorderBrush="Gray" Margin="10,10,10,10" BorderThickness="2" Grid.Row="0">
+            <Maps:MapControl x:Name="mapTrajet" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Stretch"/>
+        </Border>
+        <Border x:Name="CanvasButton" BorderBrush="Gray" Margin="10,10,10,10" BorderThickness="2" Grid.Row="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="5*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Liste des trajets" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25" Grid.Row="0"/>
+                <ListBox x:Name="listeTrajet" SelectionChanged="listeTrajet_SelectionChanged" Grid.Row="1" Background="Black">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Width="auto">
+                                <Border x:Name="borderItem" Width="auto" BorderBrush="White" Margin="5,5,5,5" BorderThickness="1">
+                                    <TextBlock Text="{Binding name}" Width="auto" Margin="5,5,5,5" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="White"/>
+                                </Border>
+                            </Grid>
+                            </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
     </Grid>
 </Page>
