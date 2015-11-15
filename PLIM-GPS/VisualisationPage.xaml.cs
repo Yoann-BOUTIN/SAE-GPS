@@ -217,8 +217,7 @@ namespace PLIM_GPS
 
             ContentDialog dialog = new ContentDialog()
             {
-                Title = "Comment voulez vous renommer votre trajet ?",
-                MaxWidth = ActualWidth
+                Title = "Renommez votre trajet"
             };
             var text = new TextBox
             {
