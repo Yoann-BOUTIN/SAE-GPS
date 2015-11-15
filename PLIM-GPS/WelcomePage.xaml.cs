@@ -1,13 +1,14 @@
-﻿using System;
+﻿using GPSBackgroundTask;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-
-// Pour en savoir plus sur le modèle d’élément Page vierge, consultez la page http://go.microsoft.com/fwlink/?LinkID=390556
 
 namespace PLIM_GPS
 {
@@ -17,27 +18,73 @@ namespace PLIM_GPS
     public sealed partial class WelcomePage : Page
     {
 
-        private Geolocator geolocator;
+        #region PROPERTIES
+        public Geolocator MyGeolocator { get; set; }
+        public bool IsTracking { get; set; }
+        public List<GPSElement> SavedPositions { get; set; }
+        Windows.System.Display.DisplayRequest Display { get; set; }
+        #endregion
 
-        public bool isAlreadyTracking { get; set; }
 
-        Windows.System.Display.DisplayRequest display;
+        #region SYSTEM METHODS
 
         public WelcomePage()
         {
             this.InitializeComponent();
+            // Initialisation du Geolocator
+            if (MyGeolocator == null)
+            {
+                MyGeolocator = new Geolocator();
+                // Précision Haute, si on bouge de 15m, rapport de position toutes les 2s (2000ms)
+                MyGeolocator.DesiredAccuracy = PositionAccuracy.High;
+                MyGeolocator.MovementThreshold = 15;
+                MyGeolocator.ReportInterval = 2000;
+            }
+            // Initialisation de la liste de position
+            if (SavedPositions == null)
+            {
+                SavedPositions = new List<GPSElement>();
+            }
+            // Initialise le cache pour la navigation
             this.NavigationCacheMode = NavigationCacheMode.Required;
-            startButton.Content = "Start";
-            display = new Windows.System.Display.DisplayRequest();
+            Display = new Windows.System.Display.DisplayRequest();
         }
 
-        /// <summary>
-        /// Invoqué lorsque cette page est sur le point d'être affichée dans un frame.
-        /// </summary>
-        /// <param name="e">Données d'événement décrivant la manière dont l'utilisateur a accédé à cette page.
-        /// Ce paramètre est généralement utilisé pour configurer la page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            refreshUI();
+        }
+        #endregion
+
+        #region UI METHODS
+        private void refreshUI()
+        {
+            if (IsTracking)
+            {
+                // Etat tracker
+                stateText.Text = "Running";
+                stateText.Foreground = new SolidColorBrush(Colors.Green);
+
+                // Boutons
+                startButton.Content = "Stop";
+
+                // Textes
+                titleText.Text = "Félicitations";
+                explanationText.Text = "Félicitations l'enregistrement de votre position GPS a commencé. Vous pouvez l'arrêter à tout moment en utilisant le bouton 'Stop' ci-dessous. Le bouton 'Visualize' vous permet de visualiser les trajets déjà enregistrés par l'application. ";
+            }
+            else
+            {
+                // Etat tracker
+                stateText.Text = "Stopped";
+                stateText.Foreground = new SolidColorBrush(Colors.Red);
+
+                // Boutons
+                startButton.Content = "Start";
+
+                // Textes
+                titleText.Text = "Bienvenue";
+                explanationText.Text = "Bienvenue sur l'appication PLIM GPS grâce à laquelle vous allez pouvoir suivre vos déplacements tout au long de la journée. Pour commencez à suivre votre position, appuyez sur le bouton 'Start' ci - dessous.";
+            }
         }
 
 
@@ -45,72 +92,69 @@ namespace PLIM_GPS
         // Démarre l'enregistrement de la position
         private async void startButton_Click(object sender, RoutedEventArgs e)
         {
-            if((String)startButton.Content == "Start")
+            if (!IsTracking)
             {
-                display.RequestActive();
-                titleText.Text = "Félicitation";
-                expicationText.Text = "Félicitations l'enregistrement de votre position GPS a commencé. Vous pouvez l'arrêter à tout moment en utilisant le bouton 'Stop' ci-dessous. Le bouton 'Visualize' vous permet de visualiser les trajets déjà enregistrés par l'application. ";
+                // Demande de laisser l'écran allumer
+                Display.RequestActive();
+
                 stateText.Text = "In progress...";
                 stateText.Foreground = new SolidColorBrush(Colors.Orange);
-                geolocator = new Geolocator();
-                geolocator.DesiredAccuracyInMeters = 20;
 
+                // Récupération de la première position
+                Geoposition startPosition = await MyGeolocator.GetGeopositionAsync(
+                        maximumAge : TimeSpan.FromSeconds(50),
+                        timeout : TimeSpan.FromSeconds(10)
+                    );
 
+                // Méthode lorsque la position change
+                MyGeolocator.PositionChanged += OnPositionChanged;
 
-
-
-                try
-                {
-                    Geoposition geoposition = await geolocator.GetGeopositionAsync(
-                         maximumAge: TimeSpan.FromMinutes(5),
-                         timeout: TimeSpan.FromSeconds(10)
-                        );
-
-
-                    geoText.Text = geoposition.Coordinate.Point.Position.Latitude.ToString() + ", " + geoposition.Coordinate.Point.Position.Longitude.ToString();
-
-                    
-                }
-                //If an error is catch 2 are the main causes: the first is that you forgot to include ID_CAP_LOCATION in your app manifest. 
-                //The second is that the user doesn't turned on the Location Services
-                catch (Exception ex)
-                {
-                    if ((uint)ex.HResult == 0x80004004)
-                    {
-                        //geolocation.Text = "location  is disabled in phone settings.";
-                    }
-                }
+                IsTracking = true;
             }
-            else if((String)startButton.Content == "Stop")
+            else
             {
-                display.RequestRelease();
-            }
-            
-            changeButtonState();
-        }
+                // Désactive l'écran allumer
+                Display.RequestRelease();
 
-        private void changeButtonState()
-        {
-            if ((String)startButton.Content == "Start")
-            {
-                startButton.Content = "Stop";
-                stateText.Text = "Running";
-                stateText.Foreground = new SolidColorBrush(Colors.Green);
+                stateText.Text = "Waiting to stop...";
+                stateText.Foreground = new SolidColorBrush(Colors.Orange);
+
+                // Sauvegarde des positions enregistrées
+                await DataManager.SaveDataAsync(SavedPositions);
+
+                // On arrête de suivre sa position
+                MyGeolocator.PositionChanged -= OnPositionChanged;
+
+                IsTracking = false;
+                //TODO appel de la fonction de clustering
+
             }
-            else if ((String)startButton.Content == "Stop")
-            {
-                startButton.Content = "Start";
-                stateText.Text = "Stopped";
-                stateText.Foreground = new SolidColorBrush(Colors.Red);
-            }
+            // MAJ de l'UI
+            refreshUI();
         }
 
         private void visualizeButton_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(VisualisationPage));
         }
-        
+        #endregion
 
-        
+        #region GEOLOCATION METHODS
+        private void OnPositionChanged(object sender, PositionChangedEventArgs e)
+        {
+            Debug.WriteLine("Time : " + System.DateTime.Now);
+            Debug.WriteLine("Latitude : " + e.Position.Coordinate.Point.Position.Latitude.ToString());
+            Debug.WriteLine("Longitude : " + e.Position.Coordinate.Point.Position.Longitude.ToString());
+
+            // Création du GPSElement à sauvegarder
+            GPSElement positionToSaved = new GPSElement() {
+                Latitude = e.Position.Coordinate.Point.Position.Latitude,
+                Longitude = e.Position.Coordinate.Point.Position.Longitude,
+                RegistredAt = DateTime.Now.ToString()
+            };
+
+            SavedPositions.Add(positionToSaved);
+        }
+        #endregion
     }
 }
