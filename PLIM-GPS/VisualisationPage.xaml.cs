@@ -9,6 +9,7 @@ using Windows.Foundation.Collections;
 using Windows.Phone.UI.Input;
 using Windows.Storage.Streams;
 using Windows.UI;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Maps;
@@ -31,6 +32,7 @@ namespace PLIM_GPS
         public int Suspending { get; private set; }
         public int OnSuspending { get; private set; }
         public List<PassedData> listCoordonnee;
+        public int indexForRename;
         public VisualisationPage()
         {
             this.InitializeComponent();
@@ -73,9 +75,13 @@ namespace PLIM_GPS
 
         private void listeTrajet_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            PassedData myobject = (sender as ListBox).SelectedItem as PassedData;
+            if(listeTrajet.SelectedIndex != -1)
+            {
+                PassedData myobject = (sender as ListBox).SelectedItem as PassedData;
 
-            displayMap(myobject.geo);
+                displayMap(myobject.geo);
+            }
+            
 
         }
 
@@ -83,6 +89,10 @@ namespace PLIM_GPS
         {
             if(listCoordonnee != null)
             {
+                /*if(listCoordonnee.Count != 0)
+                {
+                    listeTrajet.ItemsSource = null;
+                }*/
                 for (int i = 0; i < listCoordonnee.Count; i++)
                 {
                     //Create a new instace of the class
@@ -190,5 +200,56 @@ namespace PLIM_GPS
             listCoordonnee.Add(data);
             listCoordonnee.Add(data2);
         }
+
+        private async void renameButton_Click(object sender, RoutedEventArgs e)
+        {
+            PassedData data = (sender as Button).DataContext as PassedData;
+            
+
+            for (int i = 0; i < listCoordonnee.Count; i++)
+            {
+                if(listCoordonnee[i].name == data.name)
+                {
+                    indexForRename = i;
+                }
+            }
+            
+
+            ContentDialog dialog = new ContentDialog()
+            {
+                Title = "Comment voulez vous renommer votre trajet ?",
+                MaxWidth = ActualWidth
+            };
+            var text = new TextBox
+            {
+                Background = new SolidColorBrush(Colors.White),
+                Foreground = new SolidColorBrush(Colors.Black),
+                PlaceholderText = "Nom du trajet..."
+            };
+
+            dialog.Content = text;
+            dialog.PrimaryButtonText = "Valider";
+            dialog.IsPrimaryButtonEnabled = true;
+            dialog.PrimaryButtonClick += delegate
+            {
+                if(text.Text != null || text.Text != "" || text.Text != " ")
+                {
+                    listCoordonnee[indexForRename].name = text.Text;
+                    data.name = listCoordonnee[indexForRename].name;
+                    listeTrajet.Items.Remove(data);
+                    listeTrajet.UpdateLayout();
+                    listeTrajet.Items.Insert(indexForRename, data);
+                    listeTrajet.SelectedIndex = indexForRename;
+                }
+                
+            };
+            dialog.SecondaryButtonText = "Annuler";
+            dialog.SecondaryButtonClick += delegate {
+                
+            };
+
+            await dialog.ShowAsync();
+        }
+
     }
 }

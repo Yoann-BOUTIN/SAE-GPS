@@ -27,12 +27,13 @@
                 <ListBox x:Name="listeTrajet" SelectionChanged="listeTrajet_SelectionChanged" Grid.Row="1" Background="Black">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid Width="auto">
-                                <Border x:Name="borderItem" Width="auto" BorderBrush="White" Margin="5,5,5,5" BorderThickness="1">
-                                    <TextBlock Text="{Binding name}" Width="auto" Margin="5,5,5,5" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="White"/>
-                                </Border>
-                            </Grid>
-                            </DataTemplate>
+                            <Border x:Name="borderItem" BorderBrush="White" Margin="5,5,5,5" BorderThickness="1">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding name}" Margin="5,5,5,5" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" TextWrapping="Wrap"/>
+                                    <Button x:Name="renameButton" Content="Renommer" HorizontalAlignment="Right" VerticalAlignment="Center" Click="renameButton_Click"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
             </Grid>
