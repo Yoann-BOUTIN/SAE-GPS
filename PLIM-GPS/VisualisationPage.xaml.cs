@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Phone.UI.Input;
+using Windows.Storage.Streams;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Maps;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
@@ -22,10 +27,33 @@ namespace PLIM_GPS
     /// </summary>
     public sealed partial class VisualisationPage : Page
     {
+
+        public int Suspending { get; private set; }
+        public int OnSuspending { get; private set; }
+        public List<PassedData> listCoordonnee;
         public VisualisationPage()
         {
             this.InitializeComponent();
+            this.Suspending += this.OnSuspending;
+
+#if WINDOWS_PHONE_APP
+            HardwareButtons.BackPressed += HardwareButtons_BackPressed;
+#endif
+            
         }
+
+#if WINDOWS_PHONE_APP
+        void HardwareButtons_BackPressed(object sender, BackPressedEventArgs e)
+        {
+            Frame rootFrame = Window.Current.Content as Frame;
+
+            if (rootFrame != null && rootFrame.CanGoBack)
+            {
+                e.Handled = true;
+                rootFrame.GoBack();
+            }
+        }
+#endif
 
         /// <summary>
         /// Invoqué lorsque cette page est sur le point d'être affichée dans un frame.
@@ -34,6 +62,133 @@ namespace PLIM_GPS
         /// Ce paramètre est généralement utilisé pour configurer la page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            listCoordonnee = new List<PassedData>();
+            testSendData();
+            mapTrajet.MapServiceToken = "abcdef-abcdefghijklmno";
+            makeasamplelist();
+        }
+
+       
+
+
+        private void listeTrajet_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            PassedData myobject = (sender as ListBox).SelectedItem as PassedData;
+
+            displayMap(myobject.geo);
+
+        }
+
+        public void makeasamplelist()
+        {
+            if(listCoordonnee != null)
+            {
+                for (int i = 0; i < listCoordonnee.Count; i++)
+                {
+                    //Create a new instace of the class
+                    PassedData obj = new PassedData();
+
+                    //Add the sample data
+                    obj.name = listCoordonnee[i].name;
+                    obj.geo = listCoordonnee[i].geo;
+
+
+                    //Add the the item object into the listbox
+                    listeTrajet.Items.Add(obj);
+                }
+            }
+            
+        }
+
+        public async void displayMap(BasicGeoposition[] trajet)
+        {
+            try {
+                MapIcon icon = new MapIcon();
+                Geopoint depart = new Geopoint(trajet[0]);
+                icon.Location = depart;
+                icon.Title = "My Location";
+                icon.Image = RandomAccessStreamReference.CreateFromUri(new Uri("ms-appx:///Assets/location-pin-48.png"));
+                mapTrajet.MapElements.Add(icon);
+
+                mapTrajet.Center = depart;
+                mapTrajet.DesiredPitch = 0;
+
+                var posList = new List<BasicGeoposition>();
+                for (int i = 0; i < trajet.Length; i++)
+                {
+                    posList.Add(new BasicGeoposition()
+                    {
+                        Latitude = trajet[i].Latitude,
+                        Longitude = trajet[i].Longitude
+                    });
+                }
+
+                drawRoute(posList);
+
+                await mapTrajet.TrySetViewAsync(depart, 15);
+            }
+            catch (Exception ex)
+            {
+                if ((uint)ex.HResult == 0x80004004)
+                {
+                    //geolocation.Text = "location  is disabled in phone settings.";
+                }
+            }
+        }
+
+        private void drawRoute(List<BasicGeoposition> pointList)
+        {
+            mapTrajet.MapElements.Clear();
+            MapPolyline line = new MapPolyline();
+            line.StrokeColor = Colors.Blue;
+            line.StrokeThickness = 5;
+            line.Path = new Geopath(pointList);
+            mapTrajet.MapElements.Add(line);
+        }
+
+        public class PassedData
+        {
+            public string name { get; set; }
+            public BasicGeoposition[] geo { get; set; }
+        }
+
+        public void testSendData()
+        {
+            PassedData data = new PassedData();
+            data.name = "Test1";
+            data.geo = new BasicGeoposition[3] {
+                        new BasicGeoposition()
+                        {
+                            Latitude = 43.711365,
+                            Longitude = 7.271298
+                        }, new BasicGeoposition()
+                        {
+                            Latitude = 43.701024,
+                            Longitude = 7.275708
+                        },
+                        new BasicGeoposition()
+                        {
+                            Latitude = 43.709713,
+                            Longitude = 7.274978
+                        }
+                    };
+            
+            PassedData data2 = new PassedData();
+            data2.name = "Test2";
+            data2.geo = new BasicGeoposition[2] {
+                        new BasicGeoposition()
+                        {
+                            Latitude = 43.711365,
+                            Longitude = 7.271298
+                        },
+                        new BasicGeoposition()
+                        {
+                            Latitude = 43.709713,
+                            Longitude = 7.274978
+                        }
+                    };
+            listCoordonnee.Add(data);
+            listCoordonnee.Add(data2);
         }
     }
 }

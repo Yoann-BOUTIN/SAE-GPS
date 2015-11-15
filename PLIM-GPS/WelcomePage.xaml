@@ -25,13 +25,16 @@
         <StackPanel Orientation="Vertical" Grid.Row="1" >
             <StackPanel Orientation="Horizontal" Margin="0 0 0 50">
                 <TextBlock Text="Etat : " FontSize="25" FontWeight="Bold" />
-                <TextBlock x:Name="stateText" Text=" Stopped" FontSize="25" Foreground="Red" FontWeight="Bold" />
+                <TextBlock x:Name="stateText" Text=" Stopped" FontSize="25" Foreground="Red" FontWeight="Bold" Margin="5,0,0,0"/>
             </StackPanel>
             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button x:Name="startButton" Content="Start" Width="200px" Height="100px" FontSize="32" Click="startButton_Click" />
-                <Button x:Name="visualizeButton" Content="Visualize" Width="200px" Height="100px" FontSize="32" IsEnabled="False"/>
+                <Button x:Name="startButton" Width="200px" Height="100px" FontSize="32" Click="startButton_Click" />
+                <Button x:Name="visualizeButton" Content="Visualize" Width="200px" Height="100px" FontSize="32" Click="visualizeButton_Click"/>
             </StackPanel>
-            
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Position actuelle : " FontSize="20"></TextBlock>
+                <TextBlock x:Name="geoText" FontSize="20" Margin="5,0,0,0"/>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Page>
