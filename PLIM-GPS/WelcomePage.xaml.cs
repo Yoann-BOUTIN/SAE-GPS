@@ -1,4 +1,4 @@
-using GPSBackgroundTask;
+﻿using GPSBackgroundTask;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,11 +22,12 @@ namespace PLIM_GPS
         public Geolocator MyGeolocator { get; set; }
         public bool IsTracking { get; set; }
         public List<GPSElement> SavedPositions { get; set; }
-
+        Windows.System.Display.DisplayRequest Display { get; set; }
         #endregion
 
 
         #region SYSTEM METHODS
+
         public WelcomePage()
         {
             this.InitializeComponent();
@@ -46,6 +47,7 @@ namespace PLIM_GPS
             }
             // Initialise le cache pour la navigation
             this.NavigationCacheMode = NavigationCacheMode.Required;
+            Display = new Windows.System.Display.DisplayRequest();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -92,6 +94,9 @@ namespace PLIM_GPS
         {
             if (!IsTracking)
             {
+                // Demande de laisser l'écran allumer
+                Display.RequestActive();
+
                 stateText.Text = "In progress...";
                 stateText.Foreground = new SolidColorBrush(Colors.Orange);
 
@@ -108,6 +113,9 @@ namespace PLIM_GPS
             }
             else
             {
+                // Désactive l'écran allumer
+                Display.RequestRelease();
+
                 stateText.Text = "Waiting to stop...";
                 stateText.Foreground = new SolidColorBrush(Colors.Orange);
 
@@ -119,6 +127,7 @@ namespace PLIM_GPS
 
                 IsTracking = false;
                 //TODO appel de la fonction de clustering
+
             }
             // MAJ de l'UI
             refreshUI();
