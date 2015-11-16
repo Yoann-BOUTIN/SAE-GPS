@@ -82,6 +82,19 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="HAC\Algorithm\AbstractCriterionAlgorithm.cs" />
+    <Compile Include="HAC\Algorithm\DistanceCriterionAlgorithm.cs" />
+    <Compile Include="HAC\Algorithm\NumberCriterionAlgorithm.cs" />
+    <Compile Include="HAC\Cluster.cs" />
+    <Compile Include="HAC\ClusterPair.cs" />
+    <Compile Include="HAC\ClusterPairs.cs" />
+    <Compile Include="HAC\Element.cs" />
+    <Compile Include="HAC\Fusions\CompleteLinkage.cs" />
+    <Compile Include="HAC\Fusions\Fusion.cs" />
+    <Compile Include="HAC\Fusions\SingleLinkage.cs" />
+    <Compile Include="HAC\HacStart.cs" />
+    <Compile Include="HAC\Metrics\IDistanceMetric.cs" />
+    <Compile Include="HAC\Metrics\JaccardDistance.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -132,6 +145,15 @@
       <Project>{defdb4d1-2be5-4d06-ab0b-dbe38c8c800c}</Project>
       <Name>GPSBackgroundTask</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\portable-net45+wp80+win8+wpa81+dnxcore50\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>
