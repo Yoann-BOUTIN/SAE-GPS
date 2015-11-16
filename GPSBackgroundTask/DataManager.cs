@@ -24,13 +24,20 @@ namespace GPSBackgroundTask
         }
 
 
-
         public static IAsyncOperation<IList<GPSElement>> GetGPSBrutDataAsync()
         {
             return DataManager.ReadGPSBrutDataAsync().AsAsyncOperation();
         }
 
-        
+        public static IAsyncOperation<bool> WriteClusterAsync(IList<PassedData> dataList)
+        {
+            return DataManager.WriteClusterInFile(dataList).AsAsyncOperation();
+        }
+
+        public static IAsyncOperation<IList<PassedData>> GetClusterListAsync()
+        {
+            return DataManager.ReadFromClusterFile().AsAsyncOperation();
+        }
 
         #endregion
 
@@ -41,13 +48,13 @@ namespace GPSBackgroundTask
         // Read and deserialize the element, return the list of GPSElement as cluster
         private static async Task<IList<GPSElement>> ReadGPSBrutDataAsync() 
         {
-            List<GPSElement> cluster;
+            List<GPSElement> brutDatas;
             var JSONSerializer = new DataContractJsonSerializer(typeof(List<GPSElement>));
             var stream = await ApplicationData.Current.LocalFolder.OpenStreamForReadAsync(storageFile);
 
-            cluster = (List<GPSElement>)JSONSerializer.ReadObject(stream);
+            brutDatas = (List<GPSElement>)JSONSerializer.ReadObject(stream);
 
-            return cluster;
+            return brutDatas;
         }
 
         // Write the List as 
@@ -65,6 +72,32 @@ namespace GPSBackgroundTask
             }
 
             return true;
+        }
+
+        private static async Task<bool> WriteClusterInFile(IList<PassedData> dataList)
+        {
+            if (dataList == null)
+            {
+                return false;
+            }
+            var serializer = new DataContractJsonSerializer(typeof(List<PassedData>));
+            using (var stream = await ApplicationData.Current.LocalFolder.OpenStreamForWriteAsync(clusterFile, CreationCollisionOption.ReplaceExisting))
+            {
+                serializer.WriteObject(stream, dataList);
+            }
+
+            return true;
+        }
+
+        public static async Task<IList<PassedData>> ReadFromClusterFile()
+        {
+            string content = String.Empty;
+            var jsonSerializer = new DataContractJsonSerializer(typeof(List<PassedData>));
+            var stream = await ApplicationData.Current.LocalFolder.OpenStreamForReadAsync(clusterFile);
+            List<PassedData> dataList = (List<PassedData>)jsonSerializer.ReadObject(stream);
+            System.Diagnostics.Debug.WriteLine(dataList[0].Name);
+
+            return dataList;
         }
         #endregion
     }
