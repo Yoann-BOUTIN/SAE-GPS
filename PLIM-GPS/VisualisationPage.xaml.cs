@@ -63,15 +63,16 @@ namespace PLIM_GPS
         /// </summary>
         /// <param name="e">Données d'événement décrivant la manière dont l'utilisateur a accédé à cette page.
         /// Ce paramètre est généralement utilisé pour configurer la page.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             listCoordonnee = new List<PassedData>();
-            testSendData();
+            listCoordonnee = (List<PassedData>)DataManager.GetClusterListAsync();
+            //testSendData();
             mapTrajet.MapServiceToken = "abcdef-abcdefghijklmno";
             makeasamplelist();
         }
 
-       
+
 
 
         private void listeTrajet_SelectionChanged(object sender, SelectionChangedEventArgs e)

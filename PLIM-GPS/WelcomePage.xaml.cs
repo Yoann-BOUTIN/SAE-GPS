@@ -201,17 +201,14 @@ namespace PLIM_GPS
             HacStart start = new HacStart(elementArray, new SingleLinkage(), new JaccardDistance());
             // Calcul du clustering : maximumDistance = 2f; nombreClusterMinACréer = 2
             var clusterList = start.Cluster(2f, 1);
-            var listeCluster = new List<PassedData>[len];
+            List<PassedData> listeCluster = new List<PassedData>();
             var nbElement = 0;
             cpt = 0;
 
             // Pour chaque cluster
             foreach(var cluster in clusterList)
             {
-                var data = new PasserData();
-                data.name = "Cluster " + cpt;
-                data.geo = new BasicGeoposition[cluster.]
-                listeCluster.add()
+                
                 Debug.WriteLine("Cluster : " + cluster.Name);
                 // Pour chaque élément du cluster
                 foreach (Element element in cluster)
@@ -219,10 +216,26 @@ namespace PLIM_GPS
                     Debug.WriteLine("Elements : " + element.RegistredAt);
                     Debug.WriteLine("Lat : " + element.Latitude);
                     Debug.WriteLine("Long : " + element.Longitude);
+
                     nbElement += 3;
                 }
+                PassedData data = new PassedData();
+                data.Name = "Cluster " + cpt;
+                data.geo = new BasicGeoposition[nbElement / 3];
+                var i = 0;
+                foreach(Element element in cluster)
+                {
+                    data.geo[i] = new BasicGeoposition()
+                    {
+                        Latitude = Convert.ToDouble(element.Latitude.Replace(".", ",")),
+                        Longitude = Convert.ToDouble(element.Longitude.Replace(".", ","))
+                    };
+                    i++;
+                }
+                listeCluster.Add(data);
+                cpt++;
             }
-
+            await DataManager.WriteClusterAsync(listeCluster);
 
             // Montre
 
