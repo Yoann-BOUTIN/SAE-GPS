@@ -56,7 +56,7 @@ namespace PLIM_GPS
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             listCoordonnee = new List<PassedData>();
-            listCoordonnee = (List<PassedData>)DataManager.GetClusterListAsync();
+            listCoordonnee = (List<PassedData>) await DataManager.GetClusterListAsync();
             //testSendData();
             mapTrajet.MapServiceToken = "abcdef-abcdefghijklmno";
             makeasamplelist();
