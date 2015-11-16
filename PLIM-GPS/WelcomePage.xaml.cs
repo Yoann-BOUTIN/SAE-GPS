@@ -124,6 +124,18 @@ namespace PLIM_GPS
                 stateText.Text = "Waiting to stop...";
                 stateText.Foreground = new SolidColorBrush(Colors.Orange);
 
+                //TODO REMOVE
+                SavedPositions.Add(new GPSElement() { Latitude = 44.4610, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 44.4620, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 44.4630, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 44.4640, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 44.4650, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 44.4660, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 44.4670, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 44.4680, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 44.4690, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
+
+
                 // Sauvegarde des positions enregistrées
                 await DataManager.SaveDataAsync(SavedPositions);
 
@@ -159,17 +171,55 @@ namespace PLIM_GPS
                 RegistredAt = DateTime.Now.ToString()
             };
 
-            SavedPositions.Add(positionToSaved);
+            //SavedPositions.Add(positionToSaved);
         }
         #endregion
 
         #region CLUSTERING METHODS
         private async void startClustering()
         {
-             List<GPSElement> savedElements = (List<GPSElement>)await DataManager.RetrieveDataAsync();
+            // Récupération des GPSElements dans le JSON
+             List<GPSElement> savedElements = (List<GPSElement>)await DataManager.GetGPSBrutDataAsync();
+            // Initialisation d'un tableau d'Element, utilisés pour le clustering
+            int len = savedElements.Count;
+            var elementArray = new Element[len];
+            var cpt = 0;
+            // Pour chaque position enregistrée
+            foreach (var element in savedElements)
+            {
+                // Création d'un nouvel élément pour faire le clustering
+                elementArray[cpt] = new Element((cpt+1).ToString(),
+                    new object[] {
+                        element.RegistredAt,
+                        element.Latitude.ToString(),
+                        element.Longitude.ToString()
+                    }
+                );
+                cpt++;
+            }
+            // Préparation pour démarrer le clustering
+            HacStart start = new HacStart(elementArray, new SingleLinkage(), new JaccardDistance());
+            // Calcul du clustering : maximumDistance = 2f; nombreClusterMinACréer = 2
+            var clusterList = start.Cluster(2f, 1);
+
+            // Pour chaque cluster
+            foreach(var cluster in clusterList)
+            {
+                Debug.WriteLine("Cluster : " + cluster.Name);
+                // Pour chaque élément du cluster
+                foreach (Element element in cluster)
+                {
+                    Debug.WriteLine("Elements : " + element.RegistredAt);
+                    Debug.WriteLine("Lat : " + element.Latitude);
+                    Debug.WriteLine("Long : " + element.Longitude);
+                }
+            }
+
+
+            // Montre
 
             //prend les données Json et les sauvegarde dans un objet Json array
-            JArray jsonVal = JArray.Parse(savedElements.ToString()) as JArray;
+            /*JArray jsonVal = JArray.Parse(savedElements.ToString()) as JArray;
             dynamic GPSElements = jsonVal;
             int length = 0;
             foreach (dynamic elmt in GPSElements)
@@ -197,7 +247,7 @@ namespace PLIM_GPS
                 // TODO sauvegarder le cluster en JSON et permettre à Visualize de lire ce JSON
                 foreach (Element e in clusters[i])
                     result += "Element " + e.RegistredAt + " \n";
-            }
+            }*/
         }
         #endregion
     }

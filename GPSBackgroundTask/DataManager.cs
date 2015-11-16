@@ -15,28 +15,31 @@ namespace GPSBackgroundTask
         private const string storageFile = "GPSBrutData.json";
         private const string clusterFile = "GPSClusterData.json";
 
+
+        #region EXPOSED METHODS
         // PUBLIC exposed operations of the DataManager ==> avoid error for exposed Task
         public static IAsyncOperation<bool> SaveDataAsync(IList<GPSElement> positions)
         {
             return DataManager.WriteInFile(positions).AsAsyncOperation();
         }
 
-        public static IAsyncOperation<bool> ReadDataAsync()
+
+
+        public static IAsyncOperation<IList<GPSElement>> GetGPSBrutDataAsync()
         {
-            return DataManager.ReadFromFile().AsAsyncOperation();
+            return DataManager.ReadGPSBrutDataAsync().AsAsyncOperation();
         }
 
+        
 
-        public static IAsyncOperation<IList<GPSElement>> RetrieveDataAsync()
-        {
-            return DataManager.DeserializaClusterAsync().AsAsyncOperation();
-        }
+        #endregion
 
 
 
+        #region HIDDEN METHODS
         // Real tasks to perform
         // Read and deserialize the element, return the list of GPSElement as cluster
-        private static async Task<IList<GPSElement>> DeserializaClusterAsync() 
+        private static async Task<IList<GPSElement>> ReadGPSBrutDataAsync() 
         {
             List<GPSElement> cluster;
             var JSONSerializer = new DataContractJsonSerializer(typeof(List<GPSElement>));
@@ -63,22 +66,6 @@ namespace GPSBackgroundTask
 
             return true;
         }
-
-        private static async Task<bool> ReadFromFile()
-        {
-            string fileContent = String.Empty;
-            var stream = await ApplicationData.Current.LocalFolder.OpenStreamForReadAsync(storageFile);
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                fileContent = await reader.ReadToEndAsync();
-            }
-
-            if (fileContent.Equals(String.Empty))
-            {
-                return false;
-            }
-
-            return true;
-        }
+        #endregion
     }
 }
