@@ -69,7 +69,6 @@ namespace PLIM_GPS
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             listCoordonnee = new List<PassedData>();
-            testSendData();
             mapTrajet.MapServiceToken = "abcdef-abcdefghijklmno";
         }
 
@@ -149,45 +148,7 @@ namespace PLIM_GPS
 
 
 
-        public async void testSendData()
-        {
         
-            String savedData = await DataManager.ReadDataAsync();
-
-            //prend les données Json et les sauvegarde dans un objet Json array
-            JArray jsonVal = JArray.Parse(savedData) as JArray;
-            dynamic GPSElements = jsonVal;
-            int length = 0;
-            foreach (dynamic elmt in GPSElements)
-            {
-                length++;
-            }
-            var elements = new Element[length];
-            int j = 0;
-            foreach (dynamic elmt in GPSElements)
-            {
-                elements[j] = new Element((j + 1).ToString(), new object[] { elmt.RegistredAt.ToString(), elmt.Latitude.ToString(), elmt.Longitude.ToString() });
-                j++;
-            }
-
-           
-
-            HacStart hacStart = new HacStart(elements, new SingleLinkage(), new JaccardDistance());
-            var clusters = hacStart.Cluster(2f, 2);
-            String result = "";
-            for (int i = 0; i < clusters.Count(); i++)
-            {
-                result += "---Cluster " + (i + 1) + "---\n";
-                clusters[i].Name = "Cluster " + (i + 1);
-                listeTrajet.Items.Add(clusters[i]);
-                foreach (Element e in clusters[i])
-                    result += "Element " + e.RegistredAt + " \n";
-            }
-
-
-
-
-        }
     }
 }
 
