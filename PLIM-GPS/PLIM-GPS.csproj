@@ -82,6 +82,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Data\DataManager.cs" />
+    <Compile Include="Data\GPSElement.cs" />
+    <Compile Include="Data\PassedData.cs" />
     <Compile Include="HAC\Algorithm\AbstractCriterionAlgorithm.cs" />
     <Compile Include="HAC\Algorithm\DistanceCriterionAlgorithm.cs" />
     <Compile Include="HAC\Algorithm\NumberCriterionAlgorithm.cs" />
