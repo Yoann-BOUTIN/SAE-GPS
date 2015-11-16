@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Windows.Devices.Geolocation;
 using Windows.Phone.UI.Input;
 using Windows.Storage.Streams;
@@ -105,6 +106,7 @@ namespace PLIM_GPS
         public async void displayMap(BasicGeoposition[] trajet)
         {
             try {
+                mapTrajet.MapElements.Clear();
                 MapIcon icon = new MapIcon();
                 Geopoint depart = new Geopoint(trajet[0]);
                 icon.Location = depart;
@@ -114,18 +116,20 @@ namespace PLIM_GPS
 
                 mapTrajet.Center = depart;
                 mapTrajet.DesiredPitch = 0;
-
-                var posList = new List<BasicGeoposition>();
-                for (int i = 0; i < trajet.Length; i++)
+                if (trajet.Length > 1)
                 {
-                    posList.Add(new BasicGeoposition()
+                    var posList = new List<BasicGeoposition>();
+                    for (int i = 0; i < trajet.Length; i++)
                     {
-                        Latitude = trajet[i].Latitude,
-                        Longitude = trajet[i].Longitude
-                    });
-                }
+                        posList.Add(new BasicGeoposition()
+                        {
+                            Latitude = trajet[i].Latitude,
+                            Longitude = trajet[i].Longitude
+                        });
+                    }
 
-                drawRoute(posList);
+                    drawRoute(posList);
+                }
 
                 await mapTrajet.TrySetViewAsync(depart, 15);
             }
@@ -140,7 +144,6 @@ namespace PLIM_GPS
 
         private void drawRoute(List<BasicGeoposition> pointList)
         {
-            mapTrajet.MapElements.Clear();
             MapPolyline line = new MapPolyline();
             line.StrokeColor = Colors.Blue;
             line.StrokeThickness = 5;
@@ -148,7 +151,7 @@ namespace PLIM_GPS
             mapTrajet.MapElements.Add(line);
         }
 
-        public void testSendData()
+        /*public void testSendData()
         {
             PassedData data = new PassedData();
             data.Name = "Test1";
@@ -185,7 +188,7 @@ namespace PLIM_GPS
                     };
             listCoordonnee.Add(data);
             listCoordonnee.Add(data2);
-        }
+        }*/
 
         private async void renameButton_Click(object sender, RoutedEventArgs e)
         {
