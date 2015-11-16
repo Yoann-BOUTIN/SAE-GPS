@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GPSBackgroundTask;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -156,16 +157,10 @@ namespace PLIM_GPS
             mapTrajet.MapElements.Add(line);
         }
 
-        public class PassedData
-        {
-            public string name { get; set; }
-            public BasicGeoposition[] geo { get; set; }
-        }
-
         public void testSendData()
         {
             PassedData data = new PassedData();
-            data.name = "Test1";
+            data.Name = "Test1";
             data.geo = new BasicGeoposition[3] {
                         new BasicGeoposition()
                         {
@@ -184,7 +179,7 @@ namespace PLIM_GPS
                     };
             
             PassedData data2 = new PassedData();
-            data2.name = "Test2";
+            data2.Name = "Test2";
             data2.geo = new BasicGeoposition[2] {
                         new BasicGeoposition()
                         {
@@ -208,7 +203,7 @@ namespace PLIM_GPS
 
             for (int i = 0; i < listCoordonnee.Count; i++)
             {
-                if(listCoordonnee[i].name == data.name)
+                if(listCoordonnee[i].Name == data.Name)
                 {
                     indexForRename = i;
                 }
@@ -233,8 +228,8 @@ namespace PLIM_GPS
             {
                 if(text.Text != null || text.Text != "" || text.Text != " ")
                 {
-                    listCoordonnee[indexForRename].name = text.Text;
-                    data.name = listCoordonnee[indexForRename].name;
+                    listCoordonnee[indexForRename].Name = text.Text;
+                    data.Name = listCoordonnee[indexForRename].Name;
                     listeTrajet.Items.Remove(data);
                     listeTrajet.UpdateLayout();
                     listeTrajet.Items.Insert(indexForRename, data);
