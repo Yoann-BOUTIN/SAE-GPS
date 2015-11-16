@@ -1,6 +1,7 @@
 ﻿using HAC;
 using HAC.Fusions;
 using HAC.Metrics;
+using PLIM_GPS.HAC.Metrics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -121,15 +122,25 @@ namespace PLIM_GPS
                 stateText.Foreground = new SolidColorBrush(Colors.Orange);
 
                 //TODO REMOVE
-                SavedPositions.Add(new GPSElement() { Latitude = 44.4610, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
-                SavedPositions.Add(new GPSElement() { Latitude = 44.4620, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
-                SavedPositions.Add(new GPSElement() { Latitude = 44.4630, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
-                SavedPositions.Add(new GPSElement() { Latitude = 44.4640, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
-                SavedPositions.Add(new GPSElement() { Latitude = 44.4650, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
-                SavedPositions.Add(new GPSElement() { Latitude = 44.4660, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
-                SavedPositions.Add(new GPSElement() { Latitude = 44.4670, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
-                SavedPositions.Add(new GPSElement() { Latitude = 44.4680, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
-                SavedPositions.Add(new GPSElement() { Latitude = 44.4690, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.623655, Longitude = 7.045758, RegistredAt = "16/11/2015 22:59:47" });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.623918, Longitude = 7.046809, RegistredAt = "16/11/2015 22:59:47" });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.623840, Longitude = 7.048022, RegistredAt = "16/11/2015 22:59:47" });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.623714, Longitude = 7.048965, RegistredAt = "16/11/2015 22:59:47" });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.623913, Longitude = 7.049520, RegistredAt = "16/11/2015 22:59:47" });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.625334, Longitude = 7.049799, RegistredAt = "16/11/2015 22:59:47" });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.625567, Longitude = 7.050046, RegistredAt = "16/11/2015 22:59:47" });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.625847, Longitude = 7.050357, RegistredAt = "16/11/2015 22:59:47" });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.626002, Longitude = 7.050722, RegistredAt = "16/11/2015 22:59:47" });
+
+                SavedPositions.Add(new GPSElement() { Latitude = 43.707863, Longitude = 7.270326, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.706685, Longitude = 7.269725, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.705568, Longitude = 7.270455, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.705226, Longitude = 7.271785, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.704730, Longitude = 7.272987, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.704110, Longitude = 7.274317, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.703179, Longitude = 7.276978, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.702310, Longitude = 7.281613, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.700542, Longitude = 7.287492, RegistredAt = DateTime.Now.ToString() });
 
 
                 // Sauvegarde des positions enregistrées
@@ -194,23 +205,25 @@ namespace PLIM_GPS
                 cpt++;
             }
             // Préparation pour démarrer le clustering
-            HacStart start = new HacStart(elementArray, new SingleLinkage(), new JaccardDistance());
-            // Calcul du clustering : maximumDistance = 2f; nombreClusterMinACréer = 2
-            var clusterList = start.Cluster(2f, 1);
+            HacStart start = new HacStart(elementArray, new SingleLinkage(), new GeoDistance());
+            // Calcul du clustering : maximumDistance = 2f; nombreClusterMinACréer = 1
+            var clusterList = start.Cluster(100f, 1);
 
             // Pour chaque cluster
             foreach(var cluster in clusterList)
             {
-                Debug.WriteLine("Cluster : " + cluster.Name);
+                Debug.WriteLine("Cluster ---------------------" + cluster.Name);
                 // Pour chaque élément du cluster
                 foreach (Element element in cluster)
                 {
-                    Debug.WriteLine("Elements : " + element.RegistredAt);
-                    Debug.WriteLine("Lat : " + element.Latitude);
-                    Debug.WriteLine("Long : " + element.Longitude);
+                    Debug.WriteLine("Elements : " + element.GetDataPoints()[0]);
+                    Debug.WriteLine("Lat : " + element.GetDataPoints()[1]);
+                    Debug.WriteLine("Long : " + element.GetDataPoints()[2]);
                 }
             }
 
+
+            
 
             // Montre
 

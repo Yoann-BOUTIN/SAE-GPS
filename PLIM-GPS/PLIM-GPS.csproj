@@ -96,6 +96,8 @@
     <Compile Include="HAC\Fusions\Fusion.cs" />
     <Compile Include="HAC\Fusions\SingleLinkage.cs" />
     <Compile Include="HAC\HacStart.cs" />
+    <Compile Include="HAC\Metrics\GeoDistance.cs" />
+    <Compile Include="HarversineFormula.cs" />
     <Compile Include="HAC\Metrics\IDistanceMetric.cs" />
     <Compile Include="HAC\Metrics\JaccardDistance.cs" />
     <Compile Include="MainPage.xaml.cs">
