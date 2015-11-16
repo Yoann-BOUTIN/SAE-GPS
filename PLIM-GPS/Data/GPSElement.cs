@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GPSBackgroundTask
+namespace PLIM_GPS
 {
     public sealed class GPSElement
     {

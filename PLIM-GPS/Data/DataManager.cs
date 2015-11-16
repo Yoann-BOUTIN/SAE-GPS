@@ -4,10 +4,9 @@ using System.Threading.Tasks;
 using System.Runtime.Serialization.Json;
 using Windows.Storage;
 using System.IO;
-using Windows.UI.Notifications;
 using Windows.Foundation;
 
-namespace GPSBackgroundTask
+namespace PLIM_GPS
 {
     public static class DataManager
     {
@@ -46,7 +45,7 @@ namespace GPSBackgroundTask
         #region HIDDEN METHODS
         // Real tasks to perform
         // Read and deserialize the element, return the list of GPSElement as cluster
-        private static async Task<IList<GPSElement>> ReadGPSBrutDataAsync() 
+        public static async Task<IList<GPSElement>> ReadGPSBrutDataAsync() 
         {
             List<GPSElement> brutDatas;
             var JSONSerializer = new DataContractJsonSerializer(typeof(List<GPSElement>));
@@ -58,7 +57,7 @@ namespace GPSBackgroundTask
         }
 
         // Write the List as 
-        private static async Task<bool> WriteInFile (IList<GPSElement> positions)
+        public static async Task<bool> WriteInFile (IList<GPSElement> positions)
         {
             if (positions == null)
             {
@@ -74,7 +73,7 @@ namespace GPSBackgroundTask
             return true;
         }
 
-        private static async Task<bool> WriteClusterInFile(IList<PassedData> dataList)
+        public static async Task<bool> WriteClusterInFile(IList<PassedData> dataList)
         {
             if (dataList == null)
             {
@@ -91,13 +90,13 @@ namespace GPSBackgroundTask
 
         public static async Task<IList<PassedData>> ReadFromClusterFile()
         {
-            string content = String.Empty;
-            var jsonSerializer = new DataContractJsonSerializer(typeof(List<PassedData>));
+            List<PassedData> clusters;
+            var JSONSerializer = new DataContractJsonSerializer(typeof(List<PassedData>));
             var stream = await ApplicationData.Current.LocalFolder.OpenStreamForReadAsync(clusterFile);
-            List<PassedData> dataList = (List<PassedData>)jsonSerializer.ReadObject(stream);
-            System.Diagnostics.Debug.WriteLine(dataList[0].Name);
 
-            return dataList;
+            clusters = (List<PassedData>)JSONSerializer.ReadObject(stream);
+
+            return clusters;
         }
         #endregion
     }

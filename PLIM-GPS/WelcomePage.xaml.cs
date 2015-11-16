@@ -1,13 +1,9 @@
-﻿using GPSBackgroundTask;
-using HAC;
+﻿using HAC;
 using HAC.Fusions;
 using HAC.Metrics;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.UI;
 using Windows.UI.Xaml;
