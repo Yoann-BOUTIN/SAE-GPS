@@ -73,17 +73,29 @@ namespace PLIM_GPS
             return true;
         }
 
-        public static async Task<bool> WriteClusterInFile(IList<PassedData> dataList)
+        public static async Task<bool> WriteClusterInFile(IList<PassedData> dataList, bool updateList)
         {
             if (dataList == null)
             {
                 return false;
             }
+
             var serializer = new DataContractJsonSerializer(typeof(List<PassedData>));
-            using (var stream = await ApplicationData.Current.LocalFolder.OpenStreamForWriteAsync(clusterFile, CreationCollisionOption.ReplaceExisting))
+            if (updateList)
             {
-                serializer.WriteObject(stream, dataList);
+                using (var stream = await ApplicationData.Current.LocalFolder.OpenStreamForWriteAsync(clusterFile, CreationCollisionOption.ReplaceExisting))
+                {
+                    serializer.WriteObject(stream, dataList);
+                }
             }
+            else
+            {
+                using (var stream = await ApplicationData.Current.LocalFolder.OpenStreamForWriteAsync(clusterFile, CreationCollisionOption.OpenIfExists))
+                {
+                    serializer.WriteObject(stream, dataList);
+                }
+            }
+            
 
             return true;
         }

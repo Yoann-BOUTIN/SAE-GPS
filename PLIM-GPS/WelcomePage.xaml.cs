@@ -207,7 +207,7 @@ namespace PLIM_GPS
             // Préparation pour démarrer le clustering
             HacStart start = new HacStart(elementArray, new SingleLinkage(), new GeoDistance());
             // Calcul du clustering : maximumDistance = 2f; nombreClusterMinACréer = 1
-            var clusterList = start.Cluster(100f, 1);
+            var clusterList = start.Cluster(300f, 1);
 
             // Pour chaque cluster
             foreach(var cluster in clusterList)
