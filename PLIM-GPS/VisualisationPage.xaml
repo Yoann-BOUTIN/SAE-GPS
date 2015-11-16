@@ -29,7 +29,7 @@
                         <DataTemplate>
                             <Border x:Name="borderItem" BorderBrush="White" Margin="5,5,5,5" BorderThickness="1">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding name}" Margin="5,5,5,5" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{Binding Name}" Margin="5,5,5,5" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" TextWrapping="Wrap"/>
                                     <Button x:Name="renameButton" Content="Renommer" HorizontalAlignment="Right" VerticalAlignment="Center" Click="renameButton_Click"/>
                                 </StackPanel>
                             </Border>

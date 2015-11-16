@@ -121,15 +121,16 @@ namespace PLIM_GPS
                 stateText.Foreground = new SolidColorBrush(Colors.Orange);
 
                 //TODO REMOVE
-                SavedPositions.Add(new GPSElement() { Latitude = 44.4610, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
-                SavedPositions.Add(new GPSElement() { Latitude = 44.4620, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
-                SavedPositions.Add(new GPSElement() { Latitude = 44.4630, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
-                SavedPositions.Add(new GPSElement() { Latitude = 44.4640, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
-                SavedPositions.Add(new GPSElement() { Latitude = 44.4650, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
-                SavedPositions.Add(new GPSElement() { Latitude = 44.4660, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
-                SavedPositions.Add(new GPSElement() { Latitude = 44.4670, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
-                SavedPositions.Add(new GPSElement() { Latitude = 44.4680, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
-                SavedPositions.Add(new GPSElement() { Latitude = 44.4690, Longitude = 006.2832, RegistredAt = DateTime.Now.ToString() });
+                
+                SavedPositions.Add(new GPSElement() { Latitude = 43.623655, Longitude = 7.045758, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.623918, Longitude = 7.046809, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.623840, Longitude = 7.048022, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.623714, Longitude = 7.048965, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.623913, Longitude = 7.049520, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.625334, Longitude = 7.049799, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.625567, Longitude = 7.050046, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.625847, Longitude = 7.050357, RegistredAt = DateTime.Now.ToString() });
+                SavedPositions.Add(new GPSElement() { Latitude = 43.626002, Longitude = 7.050722, RegistredAt = DateTime.Now.ToString() });
 
 
                 // Sauvegarde des positions enregistrées
@@ -231,6 +232,41 @@ namespace PLIM_GPS
                 listeCluster.Add(data);
                 cpt++;
             }
+            /*PassedData data = new PassedData();
+            data.Name = "Test1";
+            data.geo = new BasicGeoposition[3] {
+                        new BasicGeoposition()
+                        {
+                            Latitude = 43.711365,
+                            Longitude = 7.271298
+                        }, new BasicGeoposition()
+                        {
+                            Latitude = 43.701024,
+                            Longitude = 7.275708
+                        },
+                        new BasicGeoposition()
+                        {
+                            Latitude = 43.709713,
+                            Longitude = 7.274978
+                        }
+                    };
+
+            PassedData data2 = new PassedData();
+            data2.Name = "Test2";
+            data2.geo = new BasicGeoposition[2] {
+                        new BasicGeoposition()
+                        {
+                            Latitude = 43.711365,
+                            Longitude = 7.271298
+                        },
+                        new BasicGeoposition()
+                        {
+                            Latitude = 43.709713,
+                            Longitude = 7.274978
+                        }
+                    };
+            listeCluster.Add(data);
+            listeCluster.Add(data2);*/
             await DataManager.WriteClusterAsync(listeCluster);
 
             // Montre
