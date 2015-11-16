@@ -100,7 +100,7 @@ namespace PLIM_GPS
                     PassedData obj = new PassedData();
 
                     //Add the sample data
-                    obj.name = listCoordonnee[i].name;
+                    obj.Name = listCoordonnee[i].Name;
                     obj.geo = listCoordonnee[i].geo;
 
 
