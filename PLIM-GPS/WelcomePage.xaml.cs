@@ -1,7 +1,12 @@
 ﻿using GPSBackgroundTask;
+using HAC;
+using HAC.Fusions;
+using HAC.Metrics;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.UI;
@@ -126,7 +131,8 @@ namespace PLIM_GPS
                 MyGeolocator.PositionChanged -= OnPositionChanged;
 
                 IsTracking = false;
-                //TODO appel de la fonction de clustering
+                // Commence à réaliser les clusters sur les données sauvegardées
+                startClustering();
 
             }
             // MAJ de l'UI
@@ -154,6 +160,44 @@ namespace PLIM_GPS
             };
 
             SavedPositions.Add(positionToSaved);
+        }
+        #endregion
+
+        #region CLUSTERING METHODS
+        private async void startClustering()
+        {
+             List<GPSElement> savedElements = (List<GPSElement>)await DataManager.RetrieveDataAsync();
+
+            //prend les données Json et les sauvegarde dans un objet Json array
+            JArray jsonVal = JArray.Parse(savedElements.ToString()) as JArray;
+            dynamic GPSElements = jsonVal;
+            int length = 0;
+            foreach (dynamic elmt in GPSElements)
+            {
+                length++;
+            }
+            var elements = new Element[length];
+            int j = 0;
+            foreach (dynamic elmt in GPSElements)
+            {
+                elements[j] = new Element((j + 1).ToString(), new object[] { elmt.RegistredAt.ToString(), elmt.Latitude.ToString(), elmt.Longitude.ToString() });
+                j++;
+            }
+
+
+
+            HacStart hacStart = new HacStart(elements, new SingleLinkage(), new JaccardDistance());
+            var clusters = hacStart.Cluster(2f, 2);
+            String result = "";
+            for (int i = 0; i < clusters.Count(); i++)
+            {
+                result += "---Cluster " + (i + 1) + "---\n";
+                clusters[i].Name = "Cluster " + (i + 1);
+                //listeTrajet.Items.Add(clusters[i]);
+                // TODO sauvegarder le cluster en JSON et permettre à Visualize de lire ce JSON
+                foreach (Element e in clusters[i])
+                    result += "Element " + e.RegistredAt + " \n";
+            }
         }
         #endregion
     }
