@@ -214,29 +214,26 @@ namespace PLIM_GPS
             cpt = 0;
 
             // Pour chaque cluster
-            foreach(var cluster in clusterList)
+            foreach(Cluster cluster in clusterList)
             {
                 
-                Debug.WriteLine("Cluster : " + cluster.Name);
+                PassedData data = new PassedData();
                 // Pour chaque élément du cluster
                 foreach (Element element in cluster)
                 {
-                    Debug.WriteLine("Elements : " + element.RegistredAt);
-                    Debug.WriteLine("Lat : " + element.Latitude);
-                    Debug.WriteLine("Long : " + element.Longitude);
-
-                    nbElement += 3;
+                    nbElement += 1;
                 }
-                PassedData data = new PassedData();
                 data.Name = "Cluster " + cpt;
-                data.geo = new BasicGeoposition[nbElement / 3];
+                data.geo = new BasicGeoposition[nbElement];
                 var i = 0;
                 foreach(Element element in cluster)
                 {
+                    string lat = (string)element.GetDataPoints()[1];
+                    string longi = (string)element.GetDataPoints()[2];
                     data.geo[i] = new BasicGeoposition()
                     {
-                        Latitude = Convert.ToDouble(element.Latitude.Replace(".", ",")),
-                        Longitude = Convert.ToDouble(element.Longitude.Replace(".", ","))
+                        Latitude = Convert.ToDouble(lat.Replace(".", ",")),
+                        Longitude = Convert.ToDouble(longi.Replace(".", ","))
                     };
                     i++;
 
