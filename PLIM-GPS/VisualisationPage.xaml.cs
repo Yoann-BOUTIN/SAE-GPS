@@ -49,23 +49,18 @@ namespace PLIM_GPS
         }
 #endif
 
-        /// <summary>
-        /// Invoqué lorsque cette page est sur le point d'être affichée dans un frame.
-        /// </summary>
-        /// <param name="e">Données d'événement décrivant la manière dont l'utilisateur a accédé à cette page.
-        /// Ce paramètre est généralement utilisé pour configurer la page.</param>
+        
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             listCoordonnee = new List<PassedData>();
             listCoordonnee = (List<PassedData>) await DataManager.GetClusterListAsync();
-            //testSendData();
             mapTrajet.MapServiceToken = "abcdef-abcdefghijklmno";
             makeasamplelist();
         }
 
 
 
-
+        // Changement du trajet à afficher
         private void listeTrajet_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if(listeTrajet.SelectedIndex != -1)
@@ -78,31 +73,29 @@ namespace PLIM_GPS
 
         }
 
+        // Création de tous les trajets dans la ListBox
         public void makeasamplelist()
         {
             if(listCoordonnee != null)
             {
-                /*if(listCoordonnee.Count != 0)
-                {
-                    listeTrajet.ItemsSource = null;
-                }*/
                 for (int i = 0; i < listCoordonnee.Count; i++)
                 {
-                    //Create a new instace of the class
+                    //Création d'un nouveau trajet
                     PassedData obj = new PassedData();
 
-                    //Add the sample data
+
                     obj.Name = listCoordonnee[i].Name;
                     obj.geo = listCoordonnee[i].geo;
 
 
-                    //Add the the item object into the listbox
+                    //Ajout du trajet dans la ListBox
                     listeTrajet.Items.Add(obj);
                 }
             }
             
         }
 
+        // Fonction d'affichage de la map avec les points du trajet sélectionné
         public async void displayMap(BasicGeoposition[] trajet)
         {
             try {
@@ -111,14 +104,26 @@ namespace PLIM_GPS
                 Geopoint depart = new Geopoint(trajet[0]);
                 icon.Location = depart;
                 icon.Title = "My Location";
-                icon.Image = RandomAccessStreamReference.CreateFromUri(new Uri("ms-appx:///Assets/location-pin-48.png"));
+                icon.Image = RandomAccessStreamReference.CreateFromUri(new Uri("ms-appx:///Assets/location-pin-24.png"));
+                icon.NormalizedAnchorPoint = new Windows.Foundation.Point(0.5, 0.5);
                 mapTrajet.MapElements.Add(icon);
 
                 mapTrajet.Center = depart;
                 mapTrajet.DesiredPitch = 0;
                 if (trajet.Length > 1)
                 {
-                    var posList = new List<BasicGeoposition>();
+                    // ---------------- Boucle permettant de tracet les points ------------------
+                    for(int i = 1; i < trajet.Length; i++)
+                    {
+                        var ic = new MapIcon();
+                        var pt = new Geopoint(trajet[i]);
+                        ic.Location = pt;
+                        ic.Image = RandomAccessStreamReference.CreateFromUri(new Uri("ms-appx:///Assets/location-pin-24.png"));
+                        ic.NormalizedAnchorPoint = new Windows.Foundation.Point(0.5, 1);
+                        mapTrajet.MapElements.Add(ic);
+                    }
+                    // ---------------- Boucle permettant de tracet les trajets -----------------
+                    /*var posList = new List<BasicGeoposition>();
                     for (int i = 0; i < trajet.Length; i++)
                     {
                         posList.Add(new BasicGeoposition()
@@ -128,7 +133,7 @@ namespace PLIM_GPS
                         });
                     }
 
-                    drawRoute(posList);
+                    drawRoute(posList);*/ 
                 }
 
                 await mapTrajet.TrySetViewAsync(depart, 15);
@@ -137,11 +142,12 @@ namespace PLIM_GPS
             {
                 if ((uint)ex.HResult == 0x80004004)
                 {
-                    //geolocation.Text = "location  is disabled in phone settings.";
+                    
                 }
             }
         }
 
+        // Fonction dessinant les trajets
         private void drawRoute(List<BasicGeoposition> pointList)
         {
             MapPolyline line = new MapPolyline();
@@ -151,45 +157,7 @@ namespace PLIM_GPS
             mapTrajet.MapElements.Add(line);
         }
 
-        /*public void testSendData()
-        {
-            PassedData data = new PassedData();
-            data.Name = "Test1";
-            data.geo = new BasicGeoposition[3] {
-                        new BasicGeoposition()
-                        {
-                            Latitude = 43.711365,
-                            Longitude = 7.271298
-                        }, new BasicGeoposition()
-                        {
-                            Latitude = 43.701024,
-                            Longitude = 7.275708
-                        },
-                        new BasicGeoposition()
-                        {
-                            Latitude = 43.709713,
-                            Longitude = 7.274978
-                        }
-                    };
-            
-            PassedData data2 = new PassedData();
-            data2.Name = "Test2";
-            data2.geo = new BasicGeoposition[2] {
-                        new BasicGeoposition()
-                        {
-                            Latitude = 43.711365,
-                            Longitude = 7.271298
-                        },
-                        new BasicGeoposition()
-                        {
-                            Latitude = 43.709713,
-                            Longitude = 7.274978
-                        }
-                    };
-            listCoordonnee.Add(data);
-            listCoordonnee.Add(data2);
-        }*/
-
+        // Fonction renommant les trajets
         private async void renameButton_Click(object sender, RoutedEventArgs e)
         {
             PassedData data = (sender as Button).DataContext as PassedData;
